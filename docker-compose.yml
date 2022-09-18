@@ -1,0 +1,31 @@
+version: '3.9'
+
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile.dev
+    image: misfit-api:1
+    environment:
+      - PORT=3001
+    volumes:
+      - ./api:/api
+      - /api/node_modules
+    ports:
+      - '3001:3001'
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile.dev
+    image: misfit-client:1
+    depends_on:
+      - api
+    environment:
+      - API_URL=http://api:3001
+      - NODE_ENV=development
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    ports:
+      - '3000:3000'
